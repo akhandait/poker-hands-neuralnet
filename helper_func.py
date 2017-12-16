@@ -1,14 +1,7 @@
-# name - Atharva Khandait
-# roll number - 160010020
-# In this file, I have coded all the general functions needed for the implementation of the neural network.
-# I have used stochastic gradient descent.
-# I used relu activation in the hidden layers and softmax at the output layer.
-
-
 import numpy as np
 
 def normalize_data(x):
-    m = x.shape[1]    # number of examples
+    m = x.shape[1]    # total number of examples
     mean = np.mean(x, axis = 0).reshape((1, m))
     std = np.std(x, axis = 0).reshape((1, m))
     
@@ -19,13 +12,10 @@ def initialize_parameters(layers_dims):
     parameters = {}
     L = len(layers_dims)
     
-    #vd = {}
     for i in range(1, L):
-        parameters['W' + str(i)] = np.random.randn(layers_dims[i], layers_dims[i-1]) / np.sqrt(layers_dims[i-1])
-        #parameters['W' + str(i)] = np.random.randn(layers_dims[i], layers_dims[i-1]) * 0.01
+        # He initialization
+        parameters['W' + str(i)] = np.random.randn(layers_dims[i], layers_dims[i-1]) * (2 / np.sqrt(layers_dims[i-1]))
         parameters['b' + str(i)] = np.ones((layers_dims[i], 1))
-        #vd['vdw' + str(i)] = np.zeros((layers_dims[i], layers_dims[i-1]))
-        #vd['vdb' + str(i)] = np.zeros((layers_dims[i], 1))
 
     return parameters
 
@@ -49,7 +39,6 @@ def softmax_forward(z):
 
 
 def linear_forward(A, W, b):
-
     z = np.dot(W, A) + b
     linear_cache = (A, W, b)
     
@@ -73,10 +62,13 @@ def linear_activation_forward(A_prev, W, b, activation):
 def forward_propagate(x, parameters):
     caches = []
 
+    A = x
+    """
     A = np.copy(x)
     if A.size == 85:
         A = A.reshape((85, 1))
-
+    """
+    
     L = len(parameters) // 2
 
     for i in range(1, L):
@@ -186,9 +178,6 @@ def backward_propagate_2(AL, Y, caches):
 def update_parameters(parameters, grads, learning_rate):
     L = len(parameters) // 2
     for i in range(L):
-        #vd['vdw' + str(i+1)] = beta*vd['vdw' + str(i+1)] + grads["dW" + str(i + 1)]
-        #vd['vdb' + str(i+1)] = beta*vd['vdb' + str(i+1)] + grads["db" + str(i + 1)]
-        
         parameters['W' + str(i+1)] = parameters['W' + str(i+1)] - learning_rate * grads["dW" + str(i + 1)]
         parameters['b' + str(i+1)] = parameters['b' + str(i+1)] - learning_rate * grads["db" + str(i + 1)]
         

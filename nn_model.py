@@ -1,12 +1,3 @@
-# In this file I take the data and feed it to the neural network.
-# I didn't use the normalize_data function I defined in the last file.
-# I used one-hot encoding for the input layer as well as the output layer
-# I have used learning rate as 0.01.
-
-
-### I will upload predictions on kaggle a little late.
-
-
 import pandas as pd
 import matplotlib.pyplot as plt
 from helper_func import *
@@ -16,10 +7,9 @@ import pickle
 layers_dims = [85, 40, 40, 10]
 
 df = pd.read_csv("train.csv")
-
 data = df.T.values
-
 h = data.shape[0] - 1
+
 train_x = data[:h,:]
 train_y = data[h:,:]
 
@@ -47,20 +37,17 @@ for i in range(train_y.shape[1]):
 
 
 def predict(parameters, test_x_onehot):
-    
     A, cache_useless = forward_propagate(test_x_onehot, parameters)
     m = test_x_onehot.shape[1]
 
     A = A.T
     P = np.zeros_like(A)
     P[np.arange(len(A)), A.argmax(1)] = 1
-    
     P = P.T
 
     return P
 
 def prediction_accuracy(predictions, labels):
-    
     m = labels.shape[1]
     n = 0
 
@@ -72,7 +59,6 @@ def prediction_accuracy(predictions, labels):
 
 
 def model(X, Y, layers_dims, learning_rate, batch_size, test_X, test_Y, num_iterations = 3000, print_cost=False):
-    
     costs = []                         
     parameters = initialize_parameters(layers_dims)
     m = X.shape[1]
@@ -90,7 +76,6 @@ def model(X, Y, layers_dims, learning_rate, batch_size, test_X, test_Y, num_iter
             grads = backward_propagate_2(AL, Y[:,j*batch_size:batch_size*(j+1)], caches)
             #grads = backward_propagate(AL, Y[:,j*batch_size:batch_size*(j+1)], caches)
                 
-            #parameters = update_parameters(parameters, grads, learning_rate, vd, 0.9)
             parameters = update_parameters(parameters, grads, learning_rate)
         
         A_last, caches_useless = forward_propagate(X, parameters)
